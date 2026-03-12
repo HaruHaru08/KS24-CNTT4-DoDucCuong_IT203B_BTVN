@@ -12,7 +12,7 @@ public class Main {
             System.out.println("2. Hiển thị danh sách sản phẩm");
             System.out.println("3. Cập nhật số lượng theo ID");
             System.out.println("4. Xóa sản phẩm đã hết hàng");
-            System.out.println("5. Thoát chương trìrình");
+            System.out.println("5. Thoát chương trình");
             System.out.println("=============================================");
             System.out.println("Nhập lựa chọn của bạn: ");
             choice = sc.nextInt();
