@@ -54,26 +54,64 @@ public class Bai6 {
             int choice = scanner.nextInt();
 
             switch (choice) {
-                case 1 -> {
-                    System.out.print("Số phòng: "); int p = scanner.nextInt();
-                    System.out.print("Số vé/phòng: "); int t = scanner.nextInt();
-                    System.out.print("Số quầy: "); int c = scanner.nextInt();
+                case 1:
+                    System.out.print("Số phòng: ");
+                    int p = scanner.nextInt();
+
+                    System.out.print("Số vé/phòng: ");
+                    int t = scanner.nextInt();
+
+                    System.out.print("Số quầy: ");
+                    int c = scanner.nextInt();
+
                     pools.clear();
-                    for(int i=0; i<p; i++) pools.add(new TicketPool("Phòng " + (char)('A'+i), t));
+                    for (int i = 0; i < p; i++) {
+                        pools.add(new TicketPool("Phòng " + (char) ('A' + i), t));
+                    }
+
                     executor = Executors.newFixedThreadPool(c);
                     running = true;
-                    for(int i=0; i<c; i++) executor.execute(() -> {
-                        while(running) {
-                            pools.forEach(pool -> { if(pool.sell()) System.out.println("Bán thành công tại " + pool.getName()); });
-                            try { Thread.sleep(500); } catch (InterruptedException e) {}
-                        }
-                    });
-                }
-                case 2 -> running = false;
-                case 3 -> running = true;
-                case 4 -> pools.forEach(p -> System.out.println(p.getName() + ": " + p.getSold() + " vé"));
-                case 5 -> new DeadlockDetector().run();
-                case 6 -> { if(executor != null) executor.shutdown(); System.exit(0); }
+
+                    for (int i = 0; i < c; i++) {
+                        executor.execute(() -> {
+                            while (running) {
+                                pools.forEach(pool -> {
+                                    if (pool.sell())
+                                        System.out.println("Bán thành công tại " + pool.getName());
+                                });
+                                try {
+                                    Thread.sleep(500);
+                                } catch (InterruptedException e) {
+                                }
+                            }
+                        });
+                    }
+                    break;
+
+                case 2:
+                    running = false;
+                    break;
+
+                case 3:
+                    running = true;
+                    break;
+
+                case 4:
+                    pools.forEach(p1 -> System.out.println(p1.getName() + ": " + p1.getSold() + " vé"));
+                    break;
+
+                case 5:
+                    new DeadlockDetector().run();
+                    break;
+
+                case 6:
+                    if (executor != null)
+                        executor.shutdown();
+                    System.exit(0);
+                    break;
+
+                default:
+                    System.out.println("Lựa chọn không hợp lệ");
             }
         }
     }
