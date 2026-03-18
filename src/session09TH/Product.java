@@ -1,9 +1,9 @@
 package session09TH;
 
 public abstract class Product {
-    String id;
-    String name;
-    double price;
+    protected String id;
+    protected String name;
+    protected double price;
 
     public Product() {
     }
@@ -37,13 +37,6 @@ public abstract class Product {
     public void setPrice(double price) {
         this.price = price;
     }
-    public String displayInfo() {
-        return "Product{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", price=" + price +
-                '}';
-    }
 
-    public abstract String dispayInfo();
+    public abstract void displayInfo();
 }

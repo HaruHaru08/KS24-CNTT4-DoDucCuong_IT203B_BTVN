@@ -4,77 +4,87 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        ProductDatabase productDatabase = new ProductDatabase();
-        Scanner sc =new Scanner(System.in);
+        ProductDatabase productDatabase = ProductDatabase.getInstance();
+        Scanner sc = new Scanner(System.in);
         int choice;
-        do{
+        do {
             System.out.println("---------- Quản lý sản phẩm ----------");
-            System.out.println("1.Thêm mới sản phẩm");
-            System.out.println("2.Xem danh sách sản phẩm");
-            System.out.println("3.Cập nhập thông tin sản phẩm");
-            System.out.println("4.Xóa sản phẩm");
-            System.out.println("5.Thoát");
+            System.out.println("1. Thêm mới sản phẩm");
+            System.out.println("2. Xem danh sách sản phẩm");
+            System.out.println("3. Cập nhật thông tin sản phẩm");
+            System.out.println("4. Xóa sản phẩm");
+            System.out.println("5. Thoát");
             System.out.println("--------------------------------------");
             System.out.print("Lựa chọn của bạn: ");
-            choice=sc.nextInt();
-            sc.nextLine();
-            switch (choice){
+            
+            while (!sc.hasNextInt()) {
+                System.out.print("Lựa chọn không hợp lệ. Vui lòng nhập số: ");
+                sc.next();
+            }
+            choice = sc.nextInt();
+            sc.nextLine(); // Consume newline
+
+            switch (choice) {
                 case 1:
-                    System.out.println("Thêm mới sản phẩm");
-                    System.out.println("1.Sản phẩm vật lý");
-                    System.out.println("2.Sản phẩm điện tử");
-                    System.out.print("Nhập lựa chọn sản phẩm muốn thêm mới: ");
-                    int productType=sc.nextInt();
-                    System.out.println("Nhập mã sản phẩm: ");
-                    String id=sc.next();
-                    System.out.println("Nhập tên sản phẩm: ");
-                    String name=sc.next();
-                    System.out.println("Nhập giá sản phẩm: ");
-                    double price=sc.nextDouble();
-                    if (productType==1){
-                        System.out.println("Nhập trọng lượng sản phẩm: ");
-                        double weight=sc.nextDouble();
-                        sc.nextLine();
-                        PhysicalProduct physicalProduct=new PhysicalProduct(id, name, price, weight);
-                        productDatabase.addProduct(physicalProduct);
-                    }else if (productType==2){
-                        System.out.println("Nhập kích thước sản phẩm: ");
-                        double size=sc.nextDouble();
-                        sc.nextLine();
-                        DigitalProduct digitalProduct=new DigitalProduct(id, name, price, size);
-                        productDatabase.addProduct(digitalProduct);
+                    System.out.println("--- Thêm mới sản phẩm ---");
+                    System.out.println("1. Sản phẩm vật lý");
+                    System.out.println("2. Sản phẩm kỹ thuật số");
+                    System.out.print("Nhập lựa chọn loại sản phẩm: ");
+                    int productType = sc.nextInt();
+                    sc.nextLine();
+
+                    System.out.print("Nhập mã sản phẩm: ");
+                    String id = sc.nextLine();
+                    System.out.print("Nhập tên sản phẩm: ");
+                    String name = sc.nextLine();
+                    System.out.print("Nhập giá sản phẩm: ");
+                    double price = sc.nextDouble();
+                    
+                    double additionalAttribute = 0;
+                    if (productType == 1) {
+                        System.out.print("Nhập trọng lượng sản phẩm (weight): ");
+                        additionalAttribute = sc.nextDouble();
+                    } else if (productType == 2) {
+                        System.out.print("Nhập dung lượng sản phẩm (size in MB): ");
+                        additionalAttribute = sc.nextDouble();
+                    }
+                    sc.nextLine(); // Consume newline
+
+                    Product newProduct = ProductFactory.createProduct(productType, id, name, price, additionalAttribute);
+                    if (newProduct != null) {
+                        productDatabase.addProduct(newProduct);
+                    } else {
+                        System.out.println("Loại sản phẩm không hợp lệ.");
                     }
                     break;
                 case 2:
-                    System.out.println("Danh sách sản phẩm");
+                    System.out.println("--- Danh sách sản phẩm ---");
                     productDatabase.displayProducts();
                     break;
                 case 3:
-                    System.out.println("Cập nhập thông tin sản phẩm");
-                    System.out.println("Nhập mã sản phẩm muốn sửa: ");
-                    String idUpdate=sc.nextLine();
-                    System.out.println("Nhập tên mới: ");
+                    System.out.println("--- Cập nhật thông tin sản phẩm ---");
+                    System.out.print("Nhập mã sản phẩm muốn sửa: ");
+                    String idUpdate = sc.nextLine();
+                    System.out.print("Nhập tên mới: ");
                     String newName = sc.nextLine();
-                    System.out.println("Nhập giá mới: ");
+                    System.out.print("Nhập giá mới: ");
                     double newPrice = sc.nextDouble();
                     sc.nextLine();
-                    Product updatedProduct = new PhysicalProduct(); 
-                    updatedProduct.setName(newName);
-                    updatedProduct.setPrice(newPrice);
-                    productDatabase.updateProduct(idUpdate, updatedProduct);
+
+                    productDatabase.updateProduct(idUpdate, newName, newPrice);
                     break;
                 case 4:
-                    System.out.println("Xóa sản phẩm");
-                    System.out.println("Nhập mã sản phẩm muốn xóa: ");
-                    String idDelete=sc.nextLine();
+                    System.out.println("--- Xóa sản phẩm ---");
+                    System.out.print("Nhập mã sản phẩm muốn xóa: ");
+                    String idDelete = sc.nextLine();
                     productDatabase.removeProduct(idDelete);
                     break;
                 case 5:
-                    System.out.println("Kết thúc chương trình");
+                    System.out.println("Kết thúc chương trình.");
                     break;
                 default:
-                    System.out.println("Lựa chọn không hợp lệ");
+                    System.out.println("Lựa chọn không hợp lệ.");
             }
-        }while (choice!=5);
+        } while (choice != 5);
     }
 }

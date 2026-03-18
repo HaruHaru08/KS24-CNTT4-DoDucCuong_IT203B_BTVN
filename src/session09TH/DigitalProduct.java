@@ -1,13 +1,10 @@
 package session09TH;
 
-public class DigitalProduct extends Product{
-    double size;
+public class DigitalProduct extends Product {
+    private double size;
 
     public DigitalProduct() {
-    }
-
-    public DigitalProduct(double size) {
-        this.size = size;
+        super();
     }
 
     public DigitalProduct(String id, String name, double price, double size) {
@@ -22,13 +19,14 @@ public class DigitalProduct extends Product{
     public void setSize(double size) {
         this.size = size;
     }
+
     @Override
-    public String dispayInfo() {
-        return "DigitalProduct{" +
-                "size=" + size +
-                ", id='" + id + '\'' +
+    public void displayInfo() {
+        System.out.println("DigitalProduct{" +
+                "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", price=" + price +
-                '}';
+                ", size=" + size + "MB" +
+                '}');
     }
 }

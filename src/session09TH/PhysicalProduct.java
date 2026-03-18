@@ -1,9 +1,10 @@
 package session09TH;
 
-public class PhysicalProduct extends Product{
-    double weight;
+public class PhysicalProduct extends Product {
+    private double weight;
 
     public PhysicalProduct() {
+        super();
     }
 
     public PhysicalProduct(String id, String name, double price, double weight) {
@@ -20,14 +21,12 @@ public class PhysicalProduct extends Product{
     }
 
     @Override
-    public String dispayInfo() {
-        return "PhysicalProduct{" +
+    public void displayInfo() {
+        System.out.println("PhysicalProduct{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", price=" + price +
                 ", weight=" + weight +
-                '}';
+                '}');
     }
-
-
 }
