@@ -1,9 +1,0 @@
--Predicate<User>: Kiểm tra một User có phải Admin hay không vì Predicate
-nhận vào một đối tượng và trả về boolean (true/false).
-
--Function<User, String>: Chuyển một User thành chuỗi String chứa username
-vì Function dùng để biến đổi dữ liệu từ kiểu này sang kiểu khác.
-
--Consumer<User>: In thông tin User ra Console vì Consumer chỉ thực hiện hành động và không trả về giá trị.
-
--Supplier<User>: Tạo một User mới với giá trị mặc định vì Supplier không nhận tham số và trả về một đối tượng.
