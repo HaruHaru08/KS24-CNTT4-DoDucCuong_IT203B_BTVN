@@ -1,0 +1,14 @@
+Khi người dùng nhập vào giá trị:
+' OR '1'='1
+Câu lệnh SQL ban đầu:
+SELECT * FROM Patients WHERE full_name = '...'
+Sau khi bị nối chuỗi, câu lệnh trở thành:
+SELECT * FROM Patients WHERE full_name = '' OR '1'='1';
+Luồng thực thi diễn ra như sau:
+Điều kiện full_name = '' thường sẽ sai (false) vì hiếm khi có tên rỗng.
+Điều kiện '1'='1' luôn đúng (true) vì hai vế giống nhau.
+Toán tử OR trong SQL chỉ cần một trong hai điều kiện đúng thì toàn bộ biểu thức sẽ đúng.
+Do đó:
+Mệnh đề WHERE luôn đúng với mọi bản ghi trong bảng.
+Hệ quản trị cơ sở dữ liệu sẽ trả về toàn bộ dữ liệu trong bảng Patients thay vì chỉ một bệnh nhân cụ thể.
+Đây chính là một dạng tấn công SQL Injection, cho phép kẻ tấn công vượt qua điều kiện lọc dữ liệu và truy xuất toàn bộ thông tin trong cơ sở dữ liệu.

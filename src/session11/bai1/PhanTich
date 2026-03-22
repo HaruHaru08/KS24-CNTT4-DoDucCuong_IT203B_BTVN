@@ -1,0 +1,5 @@
+Việc mở kết nối DB liên tục mà không đóng sẽ gây rò rỉ tài nguyên,
+làm đầy số lượng kết nối tối đa của database (connection exhaustion),
+dẫn đến hệ thống không thể xử lý thêm yêu cầu. Trong hệ thống y tế 24/7,
+điều này có thể gây treo hệ thống, gián đoạn truy cập dữ liệu bệnh nhân,
+ảnh hưởng trực tiếp đến hoạt động khám chữa bệnh và có thể gây hậu quả nghiêm trọng.

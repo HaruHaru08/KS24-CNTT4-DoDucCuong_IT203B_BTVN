@@ -1,0 +1,6 @@
+executeUpdate() trả về số dòng bị ảnh hưởng (affected rows).
+Ý nghĩa:
+> 0 → cập nhật thành công (có bản ghi phù hợp WHERE)
+= 0 → không có bản ghi nào bị tác động → thường là mã giường không tồn tại
+
+Dựa vào giá trị trả về, ta có thể thông báo chính xác cho y tá.

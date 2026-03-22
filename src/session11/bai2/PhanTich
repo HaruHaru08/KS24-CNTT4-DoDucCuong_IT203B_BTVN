@@ -1,0 +1,9 @@
+Đoạn code dùng if (rs.next()) nên chỉ lấy đúng 1 dòng đầu tiên → không thể in “danh sách”.
+Mỗi lần gọi next():
+Con trỏ di chuyển từ dòng hiện tại → dòng tiếp theo
+Ban đầu ở trước dòng đầu tiên
+Gọi next() lần 1 → đến dòng 1
+Gọi tiếp → dòng 2, 3, …
+Hết dữ liệu → trả về false
+
+Vì vậy phải dùng while để duyệt hết.
