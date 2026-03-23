@@ -1,0 +1,14 @@
+Trong JDBC, khi làm việc với CallableStatement để gọi Stored Procedure có
+tham số đầu ra (OUT), lập trình viên bắt buộc phải gọi registerOutParameter()
+trước khi thực thi vì JDBC cần biết trước:
+
+Vị trí của tham số OUT
+Kiểu dữ liệu của tham số đó
+
+Trước khi gọi execute(), JDBC driver sẽ chuẩn bị vùng nhớ và cơ chế ánh xạ
+để nhận dữ liệu trả về từ database. Nếu không đăng ký trước, hệ thống sẽ không
+biết phải nhận dữ liệu kiểu gì, dẫn đến lỗi khi cố gắng lấy giá trị bằng getDouble()
+hoặc các phương thức tương tự.
+
+Nói cách khác, registerOutParameter() đóng vai trò như một bước “khai báo trước” để
+JDBC chuẩn bị nhận dữ liệu từ phía database.

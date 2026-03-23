@@ -1,0 +1,24 @@
+PreparedStatement được coi là “tấm khiên” chống lại SQL Injection vì nó
+tách biệt hoàn toàn giữa câu lệnh SQL và dữ liệu đầu vào của người dùng.
+
+Trong cách viết thông thường với Statement, lập trình viên nối trực tiếp dữ liệu người dùng
+vào câu SQL. Điều này rất nguy hiểm vì nếu người dùng nhập vào các ký tự đặc biệt hoặc
+đoạn mã SQL (ví dụ: ' OR '1'='1), thì đoạn dữ liệu đó sẽ được hiểu như một phần của câu lệnh SQL,
+làm thay đổi logic truy vấn và có thể dẫn đến việc đăng nhập trái phép hoặc truy cập dữ liệu
+không hợp lệ.
+
+Ngược lại, PreparedStatement sử dụng các dấu hỏi chấm (?) làm tham số thay thế.
+Khi đó, câu lệnh SQL được gửi lên hệ quản trị cơ sở dữ liệu để biên dịch trước (pre-compiled)
+mà chưa có dữ liệu cụ thể. Sau khi câu lệnh đã được phân tích cú pháp và cố định cấu trúc,
+hệ thống mới nhận các giá trị đầu vào và gán vào các vị trí ?.
+
+Chính cơ chế “biên dịch trước” này đảm bảo rằng:
+
+Cấu trúc câu SQL không thể bị thay đổi bởi dữ liệu đầu vào.
+Mọi giá trị người dùng nhập vào đều được coi là dữ liệu thuần túy,
+không phải là một phần của câu lệnh SQL.
+Các ký tự đặc biệt (như ', ", --) không còn khả năng phá vỡ câu truy vấn.
+
+Vì vậy, dù người dùng có cố tình nhập mã độc, hệ thống vẫn chỉ xử lý nó như một
+chuỗi thông thường, không thực thi như lệnh SQL. Đây chính là lý do PreparedStatement
+được xem như một lớp bảo vệ hiệu quả chống lại SQL Injection.

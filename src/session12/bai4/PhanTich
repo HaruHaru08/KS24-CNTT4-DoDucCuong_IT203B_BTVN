@@ -1,0 +1,11 @@
+Trong đoạn code ban đầu, mỗi lần lặp đều tạo mới một Statement và
+thực thi một câu lệnh SQL dạng chuỗi. Điều này gây ra sự lãng phí tài nguyên
+nghiêm trọng cho Database Server vì:
+
+Mỗi câu lệnh SQL (dù có cùng cấu trúc) đều phải trải qua lại toàn bộ các bước:
+Parse (phân tích cú pháp)
+Validate (kiểm tra tính hợp lệ)
+Optimize (tối ưu hóa)
+Tạo Execution Plan (kế hoạch thực thi)
+Nếu vòng lặp chạy 1000 lần
+Database phải thực hiện 1000 lần các bước trên, mặc dù câu lệnh chỉ khác dữ liệu.

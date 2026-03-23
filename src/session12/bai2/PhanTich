@@ -1,0 +1,22 @@
+Các phương thức như setDouble() và setInt() trong PreparedStatement
+giúp lập trình viên không cần lo lắng về việc sử dụng dấu chấm (.) hay dấu phẩy (,)
+khi làm việc với số, vì chúng xử lý dữ liệu theo kiểu số thay vì dạng chuỗi.
+
+Khi lập trình viên tự nối chuỗi để tạo câu lệnh SQL, giá trị số sẽ được chuyển thành
+chuỗi dựa vào thiết lập vùng (locale) của hệ điều hành. Ở một số quốc gia, số thực có
+thể được biểu diễn bằng dấu phẩy (ví dụ: 37,5), trong khi SQL chỉ chấp nhận dấu chấm (37.5).
+Điều này dễ gây ra lỗi cú pháp hoặc sai dữ liệu khi thực thi truy vấn.
+
+Ngược lại, khi sử dụng PreparedStatement, các phương thức như setDouble() và setInt()
+sẽ truyền giá trị xuống cơ sở dữ liệu dưới dạng kiểu dữ liệu đúng (numeric type).
+Trình điều khiển JDBC sẽ tự động chuyển đổi giá trị này sang định dạng chuẩn mà hệ
+quản trị cơ sở dữ liệu hiểu, không phụ thuộc vào thiết lập vùng của máy tính.
+
+Nhờ đó:
+
+Tránh được lỗi định dạng số do khác biệt locale
+Đảm bảo dữ liệu luôn chính xác và nhất quán
+Giảm rủi ro sai sót khi xử lý dữ liệu số
+
+Vì vậy, việc sử dụng các phương thức này giúp chương trình hoạt động
+ổn định và đáng tin cậy hơn khi làm việc với dữ liệu số trong SQL.
