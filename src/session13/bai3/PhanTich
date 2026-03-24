@@ -1,0 +1,24 @@
+1. Phân tích I/O (Input/Output)
+Dữ liệu đầu vào (Input):
+int maBenhNhan: Mã định danh duy nhất của bệnh nhân trong hệ thống.
+double tienVienPhi: Số tiền viện phí cần thanh toán (phải là số dương).
+Kết quả đầu ra (Output):
+Thành công: In thông báo xác nhận đã thanh toán, giải phóng giường và xuất
+viện thành công. Dữ liệu được ghi xuống DB.
+Thất bại: Ném ra ngoại lệ (Exception) kèm thông báo chi tiết lý do
+(thiếu tiền, sai mã bệnh nhân, lỗi kết nối...). Mọi thay đổi trung gian bị hủy bỏ.
+2. Đề xuất giải pháp
+Chúng ta sẽ sử dụng một Connection duy nhất xuyên suốt quá trình và tắt chế độ AutoCommit.
+Xử lý Bẫy 1 (Logic): Sử dụng một câu lệnh SELECT để kiểm tra số dư thực tế
+trước khi thực hiện bất kỳ lệnh UPDATE nào.
+Xử lý Bẫy 2 (Dữ liệu ảo): Kiểm tra giá trị trả về của phương thức executeUpdate().
+Nếu bằng $0$, nghĩa là mã bệnh nhân không tồn tại hoặc dữ liệu không khớp, ta chủ động throw new Exception.
+3. Thiết kế các bước xử lý (Workflow)
+Khởi tạo: Mở kết nối Database.
+Thiết lập: Gọi conn.setAutoCommit(false) để bắt đầu Transaction.
+Bước 1 (Check & Update Ví): Kiểm tra số dư -> Nếu đủ thì trừ tiền -> Kiểm tra rowsAffected.
+Bước 2 (Giải phóng giường): Chạy lệnh UPDATE trạng thái giường -> Kiểm tra rowsAffected.
+Bước 3 (Chốt hồ sơ): Chạy lệnh UPDATE trạng thái bệnh nhân ->Kiểm tra rowsAffected.
+Kết thúc: Nếu tất cả suôn sẻ -> conn.commit().
+Xử lý lỗi: Nếu có Exception -> conn.rollback().
+Giải phóng: Đóng Connection và Statement.

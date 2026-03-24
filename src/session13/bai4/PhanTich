@@ -1,0 +1,48 @@
+1. Phân tích I/O
+Input: Tham số lọc (ví dụ: maKhoa = 'CapCuu', ngay = '2026-03-24').
+
+Output: List<BenhNhanDTO> – Mỗi đối tượng chứa thông tin hành chính và một List các dịch vụ đi kèm.
+
+2. Đề xuất 2 giải pháp truy vấn
+Giải pháp 1 (N+1 Query - Cách làm cũ): * Bắn 1 Query lấy danh sách 500 bệnh nhân.
+
+Chạy vòng lặp for, với mỗi bệnh nhân lại bắn thêm 1 Query lấy dịch vụ.
+
+Tổng cộng: 1 + 500 = 501 lần kết nối Database.
+
+Giải pháp 2 (LEFT JOIN & Map Grouping - Giải pháp đề xuất):
+
+Sử dụng duy nhất 1 câu SQL dùng LEFT JOIN để lấy toàn bộ dữ liệu gộp của cả 2 bảng.
+
+Sử dụng LinkedHashMap trong Java để gộp các dòng dữ liệu trùng lặp thành cấu trúc Cha-Con.
+
+So sánh chi tiết hai giải pháp truy xuất dữ liệu
+1. Về hiệu năng truyền tải (Network I/O)
+Đây là điểm yếu chí mạng của Giải pháp 1 (N+1 Query).
+Hãy tưởng tượng bạn là một shipper: thay vì chở toàn bộ 500 đơn hàng trong một chuyến xe tải,
+bạn lại lái xe máy đi đi về về giữa kho và khách hàng 500 lần. Mỗi lần "đi về" như vậy
+là một lần tạo kết nối (Connection), gửi yêu cầu và đợi Database phản hồi. Với 500 bệnh nhân,
+hệ thống phải thực hiện 501 lần truy vấn, dẫn đến độ trễ tích tụ lên tới 10-15 giây.
+Ngược lại, Giải pháp 2 (LEFT JOIN) gom tất cả vào một "chuyến xe" duy nhất.
+Chỉ với một câu lệnh SQL phức tạp hơn một chút, toàn bộ dữ liệu của cả bệnh nhân và dịch vụ được
+đổ về Java trong một lần kết nối. Điều này giúp cắt giảm triệt để thời gian chờ mạng, đưa tốc độ
+phản hồi về mức dưới 1 giây ngay cả khi số lượng bệnh nhân tăng thêm.
+2. Về áp lực xử lý trên RAM và CPU
+Ở khía cạnh này, Giải pháp 1 có vẻ "nhẹ nhàng" hơn cho bộ nhớ RAM của Java vì nó xử lý tuần tự từng
+bệnh nhân một. Tuy nhiên, nó lại vắt kiệt sức lao động của Database server khi phải tiếp nhận hàng
+trăm yêu cầu cùng lúc.Giải pháp 2 chọn cách "vất vả một lần" trên Database bằng phép JOIN, sau đó
+dồn gánh nặng tổ chức dữ liệu sang phía Java. Chúng ta cần một lượng RAM nhất định để duy trì
+LinkedHashMap nhằm gộp các dòng dữ liệu trùng lặp. Tuy nhiên, với cấu hình máy chủ hiện nay,
+việc chứa vài nghìn Object trong RAM là quá đơn giản so với việc lãng phí hàng chục giây
+đợi chờ kết nối mạng. Đây là một sự đánh đổi cực kỳ xứng đáng.
+3. Về độ phức tạp của mã nguồn và bảo trì
+Xét về độ "thuần khiết" của code, Giải pháp 1 thắng tuyệt đối vì logic cực kỳ đơn giản:
+lấy danh sách $\rightarrow$ chạy vòng lặp $\rightarrow$ lấy chi tiết. Bất kỳ lập trình viên mới nào cũng
+có thể đọc hiểu ngay.Giải pháp 2 đòi hỏi lập trình viên phải có kỹ năng SQL tốt hơn và hiểu cách sử dụng
+Map để gộp dữ liệu (Grouping) trong Java. Code sẽ dài hơn và cần chú thích kỹ (như việc xử lý NULL
+khi bệnh nhân chưa có dịch vụ). Tuy nhiên, trong môi trường y tế cấp cứu, chúng ta ưu tiên tốc độ
+cứu người hơn là sự đơn giản của mã nguồn.4. Khả năng giải quyết "Bẫy dữ liệu" (Bệnh nhân mới nhập viện)
+Giải pháp 2 sử dụng LEFT JOIN là một "mũi tên trúng hai đích". Nó không chỉ nhanh mà còn đảm bảo tính toàn
+vẹn dữ liệu. Bằng cách dùng LEFT JOIN thay vì INNER JOIN, Database sẽ tự động giữ lại tên những bệnh nhân
+chưa có dịch vụ (dòng dữ liệu sẽ có các cột dịch vụ là NULL). Trong khi đó, ở giải pháp cũ, nếu lập trình viên
+sơ suất không xử lý ngoại lệ khi query danh sách dịch vụ trống, Dashboard rất dễ bị lỗi hoặc bỏ sót bệnh nhân.

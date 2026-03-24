@@ -1,8 +1,11 @@
 package session12.bai1;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
 public class ThucThi {
     String sql = "SELECT * FROM Doctors WHERE code = ? AND pass = ?";
-
     PreparedStatement pstmt = conn.prepareStatement(sql);
 
     // Gán giá trị vào dấu ?

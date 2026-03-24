@@ -1,0 +1,17 @@
+Trong quản trị cơ sở dữ liệu, một Transaction phải đảm bảo tính Atomicity
+ (Tính nguyên tử): Hoặc là tất cả các thao tác thành công, hoặc là không có
+ thao tác nào được thực hiện.
+
+Dữ liệu "treo" (Dangling Transaction): Khi bạn gọi conn.setAutoCommit(false),
+cơ sở dữ liệu sẽ mở một giao dịch và chờ lệnh xác nhận. Khi lỗi xảy ra ở bước 2,
+lệnh conn.commit() ở cuối khối try sẽ bị bỏ qua. Nếu khối catch chỉ in lỗi, giao dịch
+đó vẫn đang mở ở trạng thái lơ lửng.
+
+Chiếm dụng tài nguyên (Locking): Cơ sở dữ liệu thường thực hiện "Row-level locking"
+(khóa dòng) khi bạn chạy lệnh UPDATE. Vì giao dịch chưa kết thúc, các bản ghi trong
+bảng Patient_Wallet sẽ bị khóa. Các tiến trình khác muốn cập nhật ví của bệnh nhân đó
+sẽ phải chờ đợi vô thời hạn, dẫn đến tình trạng nghẽn hệ thống (Deadlock).
+
+Rủi ro logic: Nếu kết nối này được trả về Connection Pool mà chưa được dọn dẹp,
+lệnh commit() của một luồng nghiệp vụ khác sau đó có thể vô tình lưu luôn cả phần
+tiền đã trừ bị lỗi trước đó.

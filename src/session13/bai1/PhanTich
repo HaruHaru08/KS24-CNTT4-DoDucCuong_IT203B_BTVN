@@ -1,0 +1,32 @@
+Trong hệ thống cấp phát thuốc của bệnh viện, nghiệp vụ yêu cầu hai thao tác:
+
+Trừ số lượng thuốc trong kho
+Lưu lịch sử cấp phát thuốc
+
+Hai thao tác này phải nằm trong cùng một Transaction, tức là phải đảm bảo tính
+Atomicity (nguyên tử): hoặc cùng thành công, hoặc cùng thất bại.
+
+Tuy nhiên, trong đoạn code ban đầu, lập trình viên không thiết lập Transaction
+một cách rõ ràng mà sử dụng mặc định của JDBC.
+
+Cụ thể, khi sử dụng Connection trong JDBC, chế độ Auto-Commit mặc định là TRUE.
+Điều này có nghĩa là mỗi câu lệnh SQL khi thực thi xong sẽ được hệ quản trị cơ sở
+dữ liệu tự động commit ngay lập tức, và được xem như một transaction độc lập.
+
+Diễn biến thực tế của chương trình như sau:
+
+Khi thực hiện câu lệnh UPDATE Medicine_Inventory, hệ thống đã tự động commit thay đổi
+dấn đến số lượng thuốc trong kho đã bị trừ và được lưu vĩnh viễn.
+Sau đó, chương trình gặp lỗi (ví dụ: phép chia cho 0), dẫn đến exception xảy ra.
+Do lỗi này, câu lệnh INSERT INTO Prescription_History không được thực thi.
+
+Kết quả là:
+
+Dữ liệu bị cập nhật một phần (thuốc đã bị trừ)
+Nhưng không có bản ghi lịch sử tương ứng
+
+Điều này làm vi phạm tính Atomicity, gây ra tình trạng mất
+nhất quán dữ liệu (data inconsistency) và thất thoát thuốc.
+
+Nguyên nhân chính là do hai câu lệnh SQL không nằm trong cùng một
+transaction, mà mỗi câu lệnh lại được commit riêng lẻ do cơ chế Auto-Commit.

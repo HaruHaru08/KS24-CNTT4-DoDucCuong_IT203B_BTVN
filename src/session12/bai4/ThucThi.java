@@ -1,5 +1,7 @@
 package session12.bai4;
 
+import java.sql.PreparedStatement;
+
 public class ThucThi {
     String sql = "INSERT INTO Results(data) VALUES(?)";
 
